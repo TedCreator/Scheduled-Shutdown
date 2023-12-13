@@ -4,4 +4,4 @@
 
 <h1> Scheduled-Shutdown </h1>
 <br/>
-Python app with UI for scheduling a system shutdown.
+Python app using PyQT6 GUI framework for scheduling a system shutdown.
