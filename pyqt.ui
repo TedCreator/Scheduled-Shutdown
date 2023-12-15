@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>621</width>
-    <height>204</height>
+    <height>235</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -262,9 +262,12 @@ background-color: rgb(0, 0, 0);</string>
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::MinimumExpanding</enum>
+          </property>
           <property name="sizeHint" stdset="0">
            <size>
-            <width>40</width>
+            <width>20</width>
             <height>20</height>
            </size>
           </property>
@@ -297,6 +300,9 @@ background-color: rgb(0, 0, 0);</string>
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Expanding</enum>
+          </property>
           <property name="sizeHint" stdset="0">
            <size>
             <width>40</width>
@@ -322,6 +328,23 @@ background-color: rgb(0, 0, 0);</string>
          </size>
         </property>
        </spacer>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item alignment="Qt::AlignHCenter">
+       <widget class="QLCDNumber" name="lcdHour"/>
+      </item>
+      <item alignment="Qt::AlignHCenter">
+       <widget class="QLCDNumber" name="lcdMinute">
+        <property name="segmentStyle">
+         <enum>QLCDNumber::Filled</enum>
+        </property>
+       </widget>
+      </item>
+      <item alignment="Qt::AlignHCenter">
+       <widget class="QLCDNumber" name="lcdSecond"/>
       </item>
      </layout>
     </item>
