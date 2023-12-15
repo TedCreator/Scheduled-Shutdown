@@ -18,15 +18,22 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.scheduleButton.clicked.connect(self.scheduleButtonClicked)
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.updateCountdown)
-        self.remainingtime = 0
+        self.remainingtime = -1
 
     def scheduleButtonClicked(self):
-        self.shutdown(timeToSec(self.hoursInput.value(), self.minutesInput.value(), self.secondsInput.value()))
-        self.lcdHour.setHidden(False)
-        self.lcdMinute.setHidden(False)
-        self.lcdSecond.setHidden(False)
-        self.startCountdown()
-        # self.updateCountdown(self.hoursInput.value(),self.minutesInput.value(),self.secondsInput.value())
+        if self.scheduleButton.text() == "Schedule":
+            self.lcdHour.setHidden(False)
+            self.lcdMinute.setHidden(False)
+            self.lcdSecond.setHidden(False)
+            self.startCountdown()
+            if self.remainingtime > 0:
+                self.scheduleButton.setText("Reset")
+        else:
+            self.lcdHour.setHidden(True)
+            self.lcdMinute.setHidden(True)
+            self.lcdSecond.setHidden(True)
+            self.resetCountdown()
+            self.scheduleButton.setText("Schedule")
 
     def startCountdown(self):
         self.remainingtime = timeToSec(self.hoursInput.value(), self.minutesInput.value(), self.secondsInput.value())
@@ -34,6 +41,12 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.updateCountdown()
 
         self.timer.start(1000)
+    def resetCountdown(self):
+        self.timer.stop()
+        self.lcdHour.display(0)
+        self.lcdMinute.display(0)
+        self.lcdSecond.display(0)
+        remainingtime = -1
 
     def updateCountdown(self):
         if self.remainingtime > 0:
@@ -43,18 +56,24 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.lcdMinute.display(minutes)
             self.lcdSecond.display(seconds)
             self.remainingtime -= 1
-        else: 
+        elif self.remainingtime == 0: 
+            self.lcdSecond.display(0) # cleans up the display
+            # self.shutdown()
             self.timer.stop()
+            self.lcdHour.setHidden(True)
+            self.lcdMinute.setHidden(True)
+            self.lcdSecond.setHidden(True)
+            self.scheduleButton.setText("Schedule")
         
-    def shutdown(self, seconds):
-        # May transfer this to be a headless python internal counter instead of an OS command
-        command = "shutdown -s -t " + str(seconds) + " -c " + "\"" + str(seconds) + "\""
-        print(command)
+    def generateShutdownCommand(self):
+        if sys.platform == "win32":
+            return "shutdown -s -t " + str(0)
+        else:
+            return "shutdown -p"
+
+    def shutdown(self):
         # self.logTime()
-        err = os.system(command)
-        if(err == 1190):
-            # Shutdown Abort
-            os.system("shutdown -a")
+        os.system(self.generateShutdownCommand())
 
 
 def timeToSec(h, m, s):
