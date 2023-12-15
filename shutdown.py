@@ -1,12 +1,9 @@
-from PyQt6 import QtWidgets, uic, QtCore
-from PyQt6.QtWidgets import QWidget, QApplication
+from PyQt6 import QtWidgets
 from PyQt6.QtCore import QTimer
 
 from QtMainWindow import Ui_MainWindow
 import sys
 import os
-import time
-import datetime
 
 class Window(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self, *args, obj = None, **kwargs):
