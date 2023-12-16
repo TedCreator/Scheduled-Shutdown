@@ -1,5 +1,5 @@
 from PyQt6 import QtWidgets
-from PyQt6.QtCore import QTimer
+from PyQt6.QtCore import QTimer, QFile, QTextStream, QIODeviceBase
 from PyQt6.QtWidgets import QSpinBox
 from QtMainWindow import Ui_MainWindow
 from QtCountdownWindow import Ui_Dialog
@@ -27,6 +27,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.hoursInput.setButtonSymbols(QSpinBox.ButtonSymbols.NoButtons)
         self.minutesInput.setButtonSymbols(QSpinBox.ButtonSymbols.NoButtons)
         self.secondsInput.setButtonSymbols(QSpinBox.ButtonSymbols.NoButtons)
+
     def scheduleButtonClicked(self):
         if self.scheduleButton.text() == "Schedule":
             self.startCountdown()
@@ -38,16 +39,16 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def startCountdown(self):
         self.remainingtime = timeToSec(self.hoursInput.value(), self.minutesInput.value(), self.secondsInput.value())
+        self.countdown.setStyleSheet(getStylesFromPath("CSS/CountdownWindow.css"))
         self.countdown.show()
         self.updateCountdown()
-
         self.timer.start(1000)
+
     def resetCountdown(self):
         self.timer.stop()
         self.countdown.lcdHours.display(0)
         self.countdown.lcdMinutes.display(0)
         self.countdown.lcdSeconds.display(0)
-        remainingtime = -1
 
     def updateCountdown(self):
         if self.remainingtime > 0:
@@ -73,6 +74,17 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
     def shutdown(self):
         os.system(self.generateShutdownCommand())
 
+def getStylesFromPath(path):
+    stylesheet = QFile(path)
+    # Err checking
+    if not stylesheet.open(QFile.OpenModeFlag.ReadOnly | QFile.OpenModeFlag.Text):
+        print(f"Could not open stylesheet: {stylesheet}")
+        return
+    # open -> read all lines
+    stream = QTextStream(stylesheet)
+    stylesheet = stream.readAll()
+    
+    return stylesheet
 
 def timeToSec(h, m, s):
     # 1hr:3600s   |   1min:60s    |    1s:1s
@@ -83,17 +95,7 @@ def main():
     # UI
     app = QtWidgets.QApplication(sys.argv)
     window = Window()
-    window.setStyleSheet("""
-                            QWidget { 
-                                color: rgb(255, 255, 255);
-                                background-color: rgb(0, 0, 0); 
-                            }
-                            QPushButton { 
-                                font-size: 25px;
-                                background-color: rgb(20, 20, 20);
-                                border-radius: 25px; 
-                            }
-                         """)
+    window.setStyleSheet(getStylesFromPath("CSS/MainWindow.css"))
     window.show()
     app.exec()
 

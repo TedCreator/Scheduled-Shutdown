@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>765</width>
-    <height>509</height>
+    <width>718</width>
+    <height>499</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -21,13 +21,6 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout1">
          <item>
-          <widget class="QLCDNumber" name="lcdHours">
-           <property name="digitCount">
-            <number>2</number>
-           </property>
-          </widget>
-         </item>
-         <item>
           <spacer name="horizontalSpacer">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
@@ -37,14 +30,67 @@
            </property>
            <property name="sizeHint" stdset="0">
             <size>
-             <width>40</width>
+             <width>5</width>
              <height>20</height>
             </size>
            </property>
           </spacer>
          </item>
          <item>
+          <widget class="QLCDNumber" name="lcdHours">
+           <property name="digitCount">
+            <number>2</number>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label">
+           <property name="maximumSize">
+            <size>
+             <width>50</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>100</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QLCDNumber" name="lcdMinutes">
+           <property name="digitCount">
+            <number>2</number>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_2">
+           <property name="maximumSize">
+            <size>
+             <width>50</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>100</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLCDNumber" name="lcdSeconds">
+           <property name="focusPolicy">
+            <enum>Qt::NoFocus</enum>
+           </property>
            <property name="digitCount">
             <number>2</number>
            </property>
@@ -60,21 +106,11 @@
            </property>
            <property name="sizeHint" stdset="0">
             <size>
-             <width>40</width>
+             <width>5</width>
              <height>20</height>
             </size>
            </property>
           </spacer>
-         </item>
-         <item>
-          <widget class="QLCDNumber" name="lcdSeconds">
-           <property name="focusPolicy">
-            <enum>Qt::NoFocus</enum>
-           </property>
-           <property name="digitCount">
-            <number>2</number>
-           </property>
-          </widget>
          </item>
         </layout>
        </item>
