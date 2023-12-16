@@ -1,66 +1,68 @@
 from PyQt6 import QtWidgets
 from PyQt6.QtCore import QTimer
-
+from PyQt6.QtWidgets import QSpinBox
 from QtMainWindow import Ui_MainWindow
+from QtCountdownWindow import Ui_Dialog
 import sys
 import os
+
+class Countdown(QtWidgets.QWidget, Ui_Dialog):
+    def __init__(self, *args, obj = None, **kwargs):
+        super(Countdown, self,).__init__(*args, **kwargs)
+        self.setupUi(self)
+        
 
 class Window(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self, *args, obj = None, **kwargs):
         super(Window, self,).__init__(*args, **kwargs)
         self.setupUi(self)
-        # self.lcdHour.setHidden(True)
-        # self.lcdMinute.setHidden(True)
-        # self.lcdSecond.setHidden(True)
+        self.removeSpinButtons()
         self.scheduleButton.clicked.connect(self.scheduleButtonClicked)
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.updateCountdown)
         self.remainingtime = -1
-
+        self.countdown = Countdown()
+        
+    def removeSpinButtons(self):
+        self.hoursInput.setButtonSymbols(QSpinBox.ButtonSymbols.NoButtons)
+        self.minutesInput.setButtonSymbols(QSpinBox.ButtonSymbols.NoButtons)
+        self.secondsInput.setButtonSymbols(QSpinBox.ButtonSymbols.NoButtons)
     def scheduleButtonClicked(self):
         if self.scheduleButton.text() == "Schedule":
-            self.lcdHour.setHidden(False)
-            self.lcdMinute.setHidden(False)
-            self.lcdSecond.setHidden(False)
             self.startCountdown()
             if self.remainingtime > 0:
                 self.scheduleButton.setText("Reset")
         else:
-            self.lcdHour.setHidden(True)
-            self.lcdMinute.setHidden(True)
-            self.lcdSecond.setHidden(True)
             self.resetCountdown()
             self.scheduleButton.setText("Schedule")
 
     def startCountdown(self):
         self.remainingtime = timeToSec(self.hoursInput.value(), self.minutesInput.value(), self.secondsInput.value())
-        
+        self.countdown.show()
         self.updateCountdown()
 
         self.timer.start(1000)
     def resetCountdown(self):
         self.timer.stop()
-        self.lcdHour.display(0)
-        self.lcdMinute.display(0)
-        self.lcdSecond.display(0)
+        self.countdown.lcdHours.display(0)
+        self.countdown.lcdMinutes.display(0)
+        self.countdown.lcdSeconds.display(0)
         remainingtime = -1
 
     def updateCountdown(self):
         if self.remainingtime > 0:
             hours, r = divmod(self.remainingtime, 3600)
             minutes, seconds = divmod(r, 60)
-            self.lcdHour.display(hours)
-            self.lcdMinute.display(minutes)
-            self.lcdSecond.display(seconds)
+            self.countdown.lcdHours.display(hours)
+            self.countdown.lcdMinutes.display(minutes)
+            self.countdown.lcdSeconds.display(seconds)
             self.remainingtime -= 1
         elif self.remainingtime == 0: 
-            self.lcdSecond.display(0) # cleans up the display
-            # self.shutdown()
+            self.countdown.lcdSeconds.display(0) # cleans up the display
             self.timer.stop()
-            self.lcdHour.setHidden(True)
-            self.lcdMinute.setHidden(True)
-            self.lcdSecond.setHidden(True)
+            self.countdown.hide()
             self.scheduleButton.setText("Schedule")
+            self.shutdown()
         
     def generateShutdownCommand(self):
         if sys.platform == "win32":
@@ -69,7 +71,6 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             return "shutdown -p"
 
     def shutdown(self):
-        # self.logTime()
         os.system(self.generateShutdownCommand())
 
 
@@ -78,14 +79,21 @@ def timeToSec(h, m, s):
     totalSeconds = ((h * 3600) + (m * 60) + s)
     return totalSeconds
 
-
-def logTime():
-    print("Log")
-
 def main():
     # UI
     app = QtWidgets.QApplication(sys.argv)
     window = Window()
+    window.setStyleSheet("""
+                            QWidget { 
+                                color: rgb(255, 255, 255);
+                                background-color: rgb(0, 0, 0); 
+                            }
+                            QPushButton { 
+                                font-size: 25px;
+                                background-color: rgb(20, 20, 20);
+                                border-radius: 25px; 
+                            }
+                         """)
     window.show()
     app.exec()
 
