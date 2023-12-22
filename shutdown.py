@@ -1,5 +1,5 @@
 from PyQt6 import QtWidgets
-from PyQt6.QtCore import QTimer, QFile, QTextStream, QIODeviceBase
+from PyQt6.QtCore import QTimer, QFile, QTextStream
 from PyQt6.QtWidgets import QSpinBox
 from QtMainWindow import Ui_MainWindow
 from QtCountdownWindow import Ui_Dialog
@@ -17,7 +17,7 @@ class Countdown(QtWidgets.QWidget, Ui_Dialog):
     def __init__(self, *args, obj = None, **kwargs):
         super(Countdown, self,).__init__(*args, **kwargs)
         self.setupUi(self)
-        self.setStyleSheet(getStylesFromPath("CSS/CountdownWindow.css"))
+        self.setStyleSheet(getStylesFromPath("CSS/CountdownWindow.qss"))
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.updateCountdown)
         self.destroyed.connect(self.stopTimer)
@@ -46,7 +46,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self, *args, obj = None, **kwargs):
         super(Window, self,).__init__(*args, **kwargs)
         self.setupUi(self)
-        self.setStyleSheet(getStylesFromPath("CSS/MainWindow.css"))
+        self.setStyleSheet(getStylesFromPath("CSS/MainWindow.qss"))
         self.removeSpinButtons()
         self.scheduleButton.clicked.connect(self.scheduleButtonClicked)
         self.countdown = Countdown()
@@ -58,7 +58,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def scheduleButtonClicked(self):
         self.startCountdown()
-        
+
     def startCountdown(self):
         self.countdown.startTimer(timeToSec(self.hoursInput.value(), self.minutesInput.value(), self.secondsInput.value()))
 
@@ -80,6 +80,8 @@ def timeToSec(h, m, s):
     return totalSeconds
 
 def generateShutdownCommand():
+    # Windows specific "Locking" function for testing
+    return "rundll32.exe user32.dll,LockWorkStation"
     if sys.platform == "win32":
         return "shutdown -s -t " + str(0)
     else:
@@ -89,6 +91,8 @@ def shutdown():
     os.system(generateShutdownCommand())
 
 def main():
+    # NEXT: Fix loading stylesheets when using pyinstaller
+
     # UI
     app = QtWidgets.QApplication(sys.argv)
     window = Window()

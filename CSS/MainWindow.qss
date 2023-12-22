@@ -7,3 +7,9 @@ QPushButton {
     background-color: rgb(20, 20, 20);
     border-radius: 25px; 
 }
+QSpinBox {
+    font-size: 30px;
+}
+QLabel#Prompt {
+    padding: 15px;
+}
