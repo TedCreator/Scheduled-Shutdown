@@ -81,11 +81,13 @@ def timeToSec(h, m, s):
 
 def generateShutdownCommand():
     # Windows specific "Locking" function for testing
-    return "rundll32.exe user32.dll,LockWorkStation"
-    if sys.platform == "win32":
+    # return "rundll32.exe user32.dll,LockWorkStation"
+    if sys.platform.startswith('win32'):
         return "shutdown -s -t " + str(0)
+    elif sys.platform.startswith('linux'):
+        return "shutdown -P 0"
     else:
-        return "shutdown -p"
+        return ""
 
 def shutdown():
     os.system(generateShutdownCommand())
@@ -96,7 +98,8 @@ def main():
     # UI
     app = QtWidgets.QApplication(sys.argv)
     window = Window()
-    
+    if sys.platform.startswith('linux'):
+        window.Prompt.setText("Linux Users should run this with su permissions!\n" + window.Prompt.text())
     window.show()
     app.exec()
 
