@@ -87,6 +87,7 @@ def generateShutdownCommand():
     elif sys.platform.startswith('linux'):
         return "shutdown -P 0"
     else:
+        # Supports Linux and Windows right now
         return ""
 
 def shutdown():
