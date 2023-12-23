@@ -81,11 +81,11 @@ def timeToSec(h, m, s):
 
 def generateShutdownCommand():
     # Windows specific "Locking" function for testing
-    return "rundll32.exe user32.dll,LockWorkStation"
+    # return "rundll32.exe user32.dll,LockWorkStation"
     if sys.platform == "win32":
         return "shutdown -s -t " + str(0)
     else:
-        return "shutdown -p"
+        return "shutdown -P 0"
 
 def shutdown():
     os.system(generateShutdownCommand())
