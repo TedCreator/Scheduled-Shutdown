@@ -6,6 +6,12 @@ from QtCountdownWindow import Ui_Dialog
 import sys
 import os
 
+# Tried really hard to use relative file names for easy cross-platform building
+# but I was never able to open file to load stylesheets using PyInstaller
+# For now, using absolute windows style paths
+CountdownWindowStylesPath = r"C:\Code\Python\Scheduled-Shutdown\Styles\CountdownWindow.qss"
+MainWindowStylesPath = r"C:\Code\Python\Scheduled-Shutdown\Styles\MainWindow.qss"
+
 class Countdown(QtWidgets.QWidget, Ui_Dialog):
     # Method has to be above _init_ so it exists before object is destroyed
     def stopTimer(self):
@@ -17,7 +23,7 @@ class Countdown(QtWidgets.QWidget, Ui_Dialog):
     def __init__(self, *args, obj = None, **kwargs):
         super(Countdown, self,).__init__(*args, **kwargs)
         self.setupUi(self)
-        self.setStyleSheet(getStylesFromPath("CSS/CountdownWindow.qss"))
+        self.setStyleSheet(getStylesFromPath(CountdownWindowStylesPath))
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.updateCountdown)
         self.destroyed.connect(self.stopTimer)
@@ -46,7 +52,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self, *args, obj = None, **kwargs):
         super(Window, self,).__init__(*args, **kwargs)
         self.setupUi(self)
-        self.setStyleSheet(getStylesFromPath("CSS/MainWindow.qss"))
+        self.setStyleSheet(getStylesFromPath(MainWindowStylesPath))
         self.removeSpinButtons()
         self.scheduleButton.clicked.connect(self.scheduleButtonClicked)
         self.countdown = Countdown()
@@ -81,7 +87,7 @@ def timeToSec(h, m, s):
 
 def generateShutdownCommand():
     # Windows specific "Locking" function for testing
-    # return "rundll32.exe user32.dll,LockWorkStation"
+    # # return "rundll32.exe user32.dll,LockWorkStation"
     if sys.platform.startswith('win32'):
         return "shutdown -s -t " + str(0)
     elif sys.platform.startswith('linux'):
@@ -94,8 +100,7 @@ def shutdown():
     os.system(generateShutdownCommand())
 
 def main():
-    # NEXT: Fix loading stylesheets when using pyinstaller
-
+    
     # UI
     app = QtWidgets.QApplication(sys.argv)
     window = Window()
